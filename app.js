@@ -102,8 +102,8 @@ function isLoggedIn(req, res, next) {
 // FACEBOOK AUTH
 //===============
 passport.use(new FacebookStrategy({
-    clientID: your_facebook_clientid,
-    clientSecret: "<your_facebook_secret>",
+    clientID: your_facebook_clientID,
+    clientSecret: "your_facebook_secret",
     callbackURL: "http://www.example.com/auth/facebook/callback"
   },
   function(accessToken, refreshToken, profile, done) {
@@ -320,8 +320,13 @@ app.get('/logout',function(req, res) {
 
 
 //===dashboard routes===
-app.get("/dashboard",isLoggedIn,function(req,res){
-    res.render("dashboard");
+app.get("/dashboard",function(req,res){
+  if(!(req.session && req.session.user)){
+    res.redirect("/login");
+  }
+  else
+  res.render("/dashboard");
+    // res.render("dashboard");
 });
 // app.get('/dashboard', function(req, res) {
 //   if (req.session.user && req.cookies.user_sid) {
