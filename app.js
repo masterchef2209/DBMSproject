@@ -8,7 +8,7 @@ var   express           = require("express"),
       flash             = require('connect-flash'),
       crypto            = require('crypto'),
       user              = require("./models/user"),
-      morgan            = require('morgan');  
+      morgan            = require('morgan');
 
 const methodOverride  = require('method-override'),
       cookieParser    = require('cookie-parser'),
@@ -82,9 +82,9 @@ function isLoggedIn(req, res, next) {
         return next();
     } else {
         return res.sendStatus(401);
-    }    
+    }
 };
-// app.use(session({ 
+// app.use(session({
 //     secret: 'apna dbms project',
 //     resave: false,
 //     saveUninitialized: false
@@ -101,25 +101,25 @@ function isLoggedIn(req, res, next) {
 //===============
 // FACEBOOK AUTH
 //===============
-passport.use(new FacebookStrategy({
-    clientID: your_facebook_clientID,
-    clientSecret: "your_facebook_secret",
-    callbackURL: "http://www.example.com/auth/facebook/callback"
-  },
-  function(accessToken, refreshToken, profile, done) {
-    user.findOrCreate(function(err, user) {
-      if (err) { return done(err); }
-      done(null, user);
-    });
-  }
-));
-app.get('/auth/facebook', passport.authenticate('facebook'));
-app.get('/auth/facebook',
-  passport.authenticate('facebook', { scope: 'read_stream' })
-);
-app.get('/auth/facebook/callback',
-passport.authenticate('facebook', { successRedirect: '/',
-                                    failureRedirect: '/login' }));
+// passport.use(new FacebookStrategy({
+//     clientID: your_facebook_clientID,
+//     clientSecret: "your_facebook_secret",
+//     callbackURL: "http://www.example.com/auth/facebook/callback"
+//   },
+//   function(accessToken, refreshToken, profile, done) {
+//     user.findOrCreate(function(err, user) {
+//       if (err) { return done(err); }
+//       done(null, user);
+//     });
+//   }
+// ));
+// app.get('/auth/facebook', passport.authenticate('facebook'));
+// app.get('/auth/facebook',
+//   passport.authenticate('facebook', { scope: 'read_stream' })
+// );
+// app.get('/auth/facebook/callback',
+// passport.authenticate('facebook', { successRedirect: '/',
+//                                     failureRedirect: '/login' }));
 //===================
 // FACEBOOK AUTH END
 //===================
@@ -147,8 +147,8 @@ passport.use(new GoogleStrategy({
     function(req, res){
       // The request will be redirected to Google for authentication, so this function will not be called.
     });
-  
-  app.get('/auth/google/callback', 
+
+  app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/login' }),
     function(req, res) {
       res.redirect('/dashboard');
@@ -157,7 +157,7 @@ passport.use(new GoogleStrategy({
   //GOOGLE AUTH ENDS
   //=================
 
-  
+
 
 
 
@@ -214,7 +214,7 @@ app.post("/signup", function(req,res){
         }
   });
     }
-  }); 
+  });
 });
 // app.post("/signup",function(req,res){
 //         var today = new Date();
@@ -272,7 +272,7 @@ app.post("/login", function(req,res){
         }
     });
   });
-// app.post('/login', 
+// app.post('/login',
 //   passport.authenticate('local', { failureRedirect: '/login' }),
 //   function(req, res) {
 //     res.redirect('/dashboard');
@@ -356,8 +356,8 @@ app.post("/add-new-course", (req,res)=>{
             res.redirect ("/add-new-course")
         }
     });
-    
-    
+
+
 })
 
 // example of query action
