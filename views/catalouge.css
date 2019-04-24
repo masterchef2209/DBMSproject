@@ -1,3 +1,6 @@
+body{
+    background-color: #232531;
+}
 .container{
   width: 100%;
   text-align: center;
@@ -6,8 +9,14 @@
   width: 100%;
 }
 .header{
-  font-size: 34px;
-  font-family: Roboto;
+  text-transform: capitalize;
+  font-size: 60px;
+  font-family: "Roboto Mono";
+  font-weight: 500;
+  background: linear-gradient(to right, #c70039, #ff5733 70%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 20px auto;
 }
 
 .all_item{
@@ -17,14 +26,13 @@
   justify-content: space-around;
 }
 .item{
-  width: 400px;
-  height: 60px;
+  width: 250px;
+  height: 250px;
   display: flex;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  align-items: center;
+  margin: 10px 20px;
   border-radius: 5px;
   box-shadow: 5px 10px 18px #888888;
-
 }
 .item:hover{
   box-shadow: 5px 10px 8px #888888;
@@ -33,12 +41,41 @@
 .item_link{
   display: flex;
   align-items: center;
+  position: relative;
 }
 .topic-thumbnail{
-  width: 50px;
-  height: 50px;
-  margin-right: 20px;
-  margin-left: 10px;
+  width: 150px;
+  height: 150px;
+  padding: 50px;
+  display: block;
+  height: auto;
+}
+.overlay{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: .5s ease;
+  background-color: rgba(54, 54, 54, 0.9);
+}
+.item:hover .overlay {
+  opacity: 1;
+}
+
+.text {
+  color: #ff5733;;
+  font-size: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-family: "Roboto Mono";
+  font-size: 24px;
 }
 .item_link{
   text-decoration: none;
