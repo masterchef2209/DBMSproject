@@ -1,14 +1,14 @@
-body{
-    background-color: #232531;
+body {
+  background-color: #232531;
 }
-.container{
+.containerc {
   width: 100%;
   text-align: center;
 }
-.content{
+.content {
   width: 100%;
 }
-.header{
+.header {
   text-transform: capitalize;
   font-size: 60px;
   font-family: "Roboto Mono";
@@ -19,13 +19,13 @@ body{
   margin: 20px auto;
 }
 
-.all_item{
+.all_item {
   display: flex;
   flex-wrap: wrap;
   margin-top: 20px;
   justify-content: space-around;
 }
-.item{
+.item {
   width: 250px;
   height: 250px;
   display: flex;
@@ -34,23 +34,23 @@ body{
   border-radius: 5px;
   box-shadow: 5px 10px 18px #888888;
 }
-.item:hover{
+.item:hover {
   box-shadow: 5px 10px 8px #888888;
   transform: translateX(2px);
 }
-.item_link{
+.item_link {
   display: flex;
   align-items: center;
   position: relative;
 }
-.topic-thumbnail{
+.topic-thumbnail {
   width: 150px;
   height: 150px;
   padding: 50px;
   display: block;
   height: auto;
 }
-.overlay{
+.overlay {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -59,7 +59,7 @@ body{
   height: 100%;
   width: 100%;
   opacity: 0;
-  transition: .5s ease;
+  transition: 0.5s ease;
   background-color: rgba(54, 54, 54, 0.9);
 }
 .item:hover .overlay {
@@ -67,7 +67,7 @@ body{
 }
 
 .text {
-  color: #ff5733;;
+  color: #ff5733;
   font-size: 20px;
   position: absolute;
   top: 50%;
@@ -77,30 +77,30 @@ body{
   font-family: "Roboto Mono";
   font-size: 24px;
 }
-.item_link{
+.item_link {
   text-decoration: none;
 }
-.topic{
+.topic {
   font-family: Roboto;
   color: #363636;
 }
 
-.search_bar{
+.search_bar {
   margin: 20px auto;
 }
-input[type=text] {
- width: 130px;
- box-sizing: border-box;
- border: 2px solid #ccc;
- border-radius: 4px;
- font-size: 16px;
- background-color: white;
- background-image: url('searchicon.png');
- background-position: 10px 10px;
- background-repeat: no-repeat;
- padding: 12px 20px 12px 40px;
- transition: width 0.4s ease-in-out;
+input[type="text"] {
+  width: 130px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  background-image: url("searchicon.png");
+  background-position: 10px 10px;
+  background-repeat: no-repeat;
+  padding: 12px 20px 12px 40px;
+  transition: width 0.4s ease-in-out;
 }
-input[type=text]:focus {
+input[type="text"]:focus {
   width: 80%;
 }
