@@ -23,8 +23,8 @@ const methodOverride  = require('method-override'),
 var con = mysql.createConnection({
   host:     'localhost',
   user:     'root',
-  password: 'Esha2398!',
-  database: 'user'
+  password: '<your_password>!',
+  database: 'meraki'
 });
 con.connect(function(err){
     if(err){
