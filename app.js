@@ -23,8 +23,8 @@ const methodOverride  = require('method-override'),
 var con = mysql.createConnection({
   host:     'localhost',
   user:     'root',
-  password: '<your_password>',
-  database: 'meraki'
+  password: 'Esha2398!',
+  database: 'user'
 });
 con.connect(function(err){
     if(err){
@@ -558,7 +558,7 @@ app.get("/admin/add-new-course", (req,res)=>{
 
 app.post("/admin/add-new-course", (req,res)=>{
   var title      = req.body.title;
-  var tag        = req.body.tag[0];
+  var tag        = req.body.tag;
   var link       = req.body.link;
   var instructor = req.body.instructor;
   var price      = req.body.price;
@@ -571,9 +571,106 @@ app.post("/admin/add-new-course", (req,res)=>{
       }
   });
 })
+//==== delete_courses_by_admin=====
+app.get("/admin/delete-course", (req,res)=>{
+  res.render("delete_course");
+});
 
+app.post("/admin/delete-course", (req,res)=>{
+  var courseId      = req.body.courseId;
+  var title         = req.body.title;
+  var query = "DELETE FROM courses WHERE courseId = ? AND title = ?";
+  con.query(query, [courseId,title], function (error, results, fields) {
+      if (error) throw error;
+      else{
+          res.redirect ("/admin/delete-course")
+      }
+  });
+});
+
+//====update course by admin=====
+app.get("/admin/update-course", (req,res)=>{
+  res.render("update_course");
+});
+app.get("/admin/update-course/update-form", (req,res)=>{
+  var courseId      = req.query.courseId;
+  var query = "SELECT * FROM courses where courseId = ?";
+  con.query(query, [courseId], function (error, result, fields) {
+      if (error) throw error;
+      else{
+        console.log(result)
+          res.render ("update-course-form", {result: result[0]})
+      }
+  });
+});
+
+app.post("/admin/update-course/update-form", (req,res)=>{
+  var title      = req.body.title;
+  var tag        = req.body.tag;
+  var link       = req.body.link;
+  var instructor = req.body.instructor;
+  var price      = req.body.price;
+  var added_by   = req.body.added_by;
+  query = "UPDATE courses set title = ?, tag = ?, link = ?, instructor = ?, price = ?, added_by = ?";
+  con.query(query,[title,tag,link,instructor,price,added_by],function(error,result,fields){
+    if(error) throw error;
+    else
+      res.redirect("/admin/dashboard");
+  })
+})
+
+
+app.get("/admin/approve-course", (req,res)=>{
+  query = "SELECT * FROM added_by_user";
+  con.query(query,function(error,result,fields){
+    if(error) throw error;
+    else{
+      // res.send(result);
+      console.log(result)
+      res.render("admin_approve_course_catalogue",{result :result});
+    }
+  });
+});
+
+
+app.get("/admin/approve/:id", (req, res)=>{
+  
+  q1 = "select * from added_by_user where courseId = '" + req.params.id + "'";
+  con.query(q1, (err, r1, f1)=>{
+    if (err){
+      console.log(err)
+    }else{
+      var q2 = "insert into courses (title,tag,link,instructor,price,downvote,upvote,added_by) values (?, ?, ?, ?, ?, ?, ?, ?)";
+      con.query(q2,[r1[0].title, r1[0].tag, r1[0].link, r1[0].instructor, r1[0].price, r1[0].downvote, r1[0].upvote, r1[0].added_by] ,(e2, r2, f2)=>{
+          if(e2){
+            console.log(e2);
+          }else{
+            var q3 = "delete from added_by_user where courseId = '" + req.params.id + "'";
+            con.query(q3,(e3,r3,f3)=>{
+                if(e3){
+                  console.log(e3);
+                }
+                else{
+                  res.redirect("/admin/approve-course");
+                }
+            })
+          }
+      })
+    }
+  })
+})
+app.get("/admin/reject/:id", (req, res)=>{
+  q1 = "delete from added_by_user where courseId = '" + req.params.id + "'";
+  con.query(q1, (err, r1, f1)=>{
+    if (err){
+      console.log(err);
+    }else{
+      res.redirect("/admin/approve-course");
+    }
+  })
+})
 //=================
-//ADMIN ROUTES END
+//ADMIN ROUTES END/
 //=================
 
 

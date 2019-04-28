@@ -1,0 +1,29 @@
+<head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+    <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
+    <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
+    <title>
+        MERAKI
+    </title>
+    <body>
+        <div class = "container">
+            <form action="/admin/update-course/update-form" method="GET">
+                <div class = "form-group">
+                    <input type="text" placeholder="course id" name="courseId" class="form-control">
+                </div>
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+        <script>$(".chosen-select").chosen({
+                no_results_text: "Oops, nothing found!"
+              })</script>
+    </body>
+</head>

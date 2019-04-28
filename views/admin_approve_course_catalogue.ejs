@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="css/courses.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+  </head>
+  <body>
+    <div class="header"><h1>Course List</h1></div>
+    <div class="container" >
+      <div class="all_item" id="items" >
+    <%result.forEach(function(each){%>
+        <div class="item">
+          <div class="image">
+            <img src="https://hackr.io/tutorials/python/logo-python.svg" alt="Python">
+          </div>
+          <div class="info">
+            <div class="title"><%=each.title%></div>
+            <div class="other_info">
+              <div class="course_info">
+                <div class="instructor"><%=each.instructor%></div>
+                <div class="price"><%=each.price%>$</div>
+                <div class="added_by"><%=each.added_by%></div>
+              </div>
+              <div class="btns">
+                <button class="visit_course_btn" type="button" name="button">Visit Course</button>
+                <div class="vote_btn">
+                  <a href = "/admin/approve/<%=each.courseId%>"><button class="vote" type="button" name="button"> Approve</button></a>
+                  <a href = "/admin/reject/<%=each.courseId%>"><button class="vote" type="button" name="button">Reject</button></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <%})%>
+        <!-- <div class="item">
+          <div class="image">
+            <img src="https://hackr.io/tutorials/python/logo-python.svg" alt="Python">
+          </div>
+          <div class="info">
+            <div class="title">Python Course</div>
+            <div class="other_info">
+              <div class="course_info">
+                <div class="instructor">Hidayat Khan</div>
+                <div class="price">200$</div>
+                <div class="added_by">Added By</div>
+              </div>
+              <div class="btns">
+                <button class="visit_course_btn" type="button" name="button">Visit Course</button>
+                <div class="vote_btn">
+                  <button class="vote" type="button" name="button"><i class="far fa-thumbs-up"></i> Upvote</button>
+                  <button class="vote" type="button" name="button"><i class="far fa-thumbs-down"></i> Downvote</button>
+                </div>
+              </div>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+    <div>
+      <button type = "submit">Delete Course</button>
+    </div>
+    <!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
+    <!-- <script type="text/javascript">
+      var text = '';
+      result = JSON.parse(result)
+      for (var i = 0; i < result.length; i++) {
+            text += '<div class="item"><div class="image"><img src="https://hackr.io/tutorials/python/logo-python.svg" alt="Python"></div><div class="info"><div class="title">'+result[i].title+'</div><div class="other_info"><div class="course_info"><div class="instructor">'+result[i].instructor+'</div><div class="price">'+result[i].price+'$</div><div class="added_by">'+result[i].added_by+'</div></div><div class="btns"><button class="visit_course_btn" type="button" name="button">Visit Course</button><div class="vote_btn"><button class="vote" type="button" name="button"><i class="far fa-thumbs-up"></i> Upvote</button><button class="vote" type="button" name="button"><i class="far fa-thumbs-down"></i> Downvote</button></div></div></div></div></div>'
+             $('#items').append(
+          text
+        );
+         };
+  </script> -->
+  </body>
+</html>
+
