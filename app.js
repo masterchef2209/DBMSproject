@@ -23,7 +23,7 @@ const methodOverride  = require('method-override'),
 var con = mysql.createConnection({
   host:     'localhost',
   user:     'root',
-  password: '<password>',
+  password: '<your_password>',
   database: 'meraki'
 });
 con.connect(function(err){
@@ -550,6 +550,27 @@ app.post("/admin/login", function(req,res){
 app.get("/admin/dashboard", function(req,res){
     res.render("admin_dashboard");
 });
+
+//======add_courses_by_admin======
+app.get("/admin/add-new-course", (req,res)=>{
+  res.render("admin_add_new_course");
+})
+
+app.post("/admin/add-new-course", (req,res)=>{
+  var title      = req.body.title;
+  var tag        = req.body.tag[0];
+  var link       = req.body.link;
+  var instructor = req.body.instructor;
+  var price      = req.body.price;
+  var added_by   = req.body.added_by;
+  var query = "INSERT INTO courses (title, tag, link, instructor, price, added_by) VALUES ('" + title + "'" + ", '" + tag +"'"+ ", '" + link +"'"+ ", '" + instructor +"'"+ ", '" + price +"'"+ ",'" + added_by +"'"+ ")";
+  con.query(query, function (error, results, fields) {
+      if (error) throw error;
+      else{
+          res.redirect ("/admin/add-new-course")
+      }
+  });
+})
 
 //=================
 //ADMIN ROUTES END
