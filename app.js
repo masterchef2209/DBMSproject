@@ -23,7 +23,7 @@ const methodOverride  = require('method-override'),
 var con = mysql.createConnection({
   host:     'localhost',
   user:     'root',
-  password: '<password>',
+  password: '<your_password>',
   database: 'meraki'
 });
 con.connect(function(err){
@@ -477,6 +477,106 @@ app.get("/topic/:id", (req, res)=>{
     }
   })
 })
+//================
+//ADMIN ROUTES
+//================
+
+//=====admin-signup routes=====
+app.get("/admin/signup",function (req,res){
+    res.render("admin_signup");
+});
+app.post("/admin/signup", function(req,res){
+    var admin_username  = req.body.admin_username;
+    var admin_password  = req.body.admin_password;
+    var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
+    salt = salt+''+admin_password;
+    var encPassword = crypto.createHash('sha1').update(salt).digest('hex');
+    con.query("SELECT * FROM adminRegistration WHERE admin_username = ?",[admin_username], function (error, rows) {
+      if(error){
+        console.log(error);
+        res.redirect("/admin/signup");
+      }
+      if(rows.length){
+        console.log("username already used...please try another one");
+        res.redirect("/admin/signup");
+      }
+      else{
+        var query1 = "INSERT INTO adminRegistration (admin_username, admin_password) VALUES ('" + admin_username + "'" + ", '" + encPassword +"'"+ ")";
+        con.query(query1, function (error, results, fields) {
+          if (error) throw error;
+          else{
+            console.log("admin successfully registered");
+            res.redirect ("/admin/login");
+          }
+    });
+      }
+    });
+});
+//=====================
+
+//=====admin login routes======
+app.get("/admin/login",function (req,res){
+    res.render("admin_login");
+});
+app.post("/admin/login", function(req,res){
+  var admin_username      = req.body.admin_username;
+  var admin_password  = req.body.admin_password;
+  var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
+  salt = salt+''+admin_password;
+  var encPassword = crypto.createHash('sha1').update(salt).digest('hex');
+  con.query("SELECT * FROM adminRegistration WHERE admin_username = ?",[admin_username], function (error, rows) {
+      if (error) {
+        console.log("Invalid username");
+        res.redirect("/admin_login");
+      }
+      else{
+        var dbPassword  = rows[0].admin_password;
+          if(!(encPassword==dbPassword)){
+            console.log("Incorrect Password");
+            res.redirect("/admin_login");
+          }
+          else{
+            console.log("Logged in");
+            req.session.user = admin_username;
+            req.session.admin = true;
+            res.redirect("/admin/dashboard");
+          }
+      }
+  });
+});
+//==========
+
+//=====admin dashboard routes ======
+app.get("/admin/dashboard", function(req,res){
+    res.render("admin_dashboard");
+});
+
+//======add_courses_by_admin======
+app.get("/admin/add-new-course", (req,res)=>{
+  res.render("admin_add_new_course");
+})
+
+app.post("/admin/add-new-course", (req,res)=>{
+  var title      = req.body.title;
+  var tag        = req.body.tag[0];
+  var link       = req.body.link;
+  var instructor = req.body.instructor;
+  var price      = req.body.price;
+  var added_by   = req.body.added_by;
+  var query = "INSERT INTO courses (title, tag, link, instructor, price, added_by) VALUES ('" + title + "'" + ", '" + tag +"'"+ ", '" + link +"'"+ ", '" + instructor +"'"+ ", '" + price +"'"+ ",'" + added_by +"'"+ ")";
+  con.query(query, function (error, results, fields) {
+      if (error) throw error;
+      else{
+          res.redirect ("/admin/add-new-course")
+      }
+  });
+})
+
+//=================
+//ADMIN ROUTES END
+//=================
+
+
 //==============
 //ROUTES END
 //==============
