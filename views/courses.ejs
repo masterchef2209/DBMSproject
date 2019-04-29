@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="/courses.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+  </head>
+  <body>
+    <div class="header"><h1>Course List</h1></div>
+    <div class="container">
+      <div class="all_item">
+        <%result.forEach(function(each){%>
+
+        
+        <div class="item">
+          <div class="image">
+            <img src="https://hackr.io/tutorials/python/logo-python.svg" alt="Python">
+          </div>
+          <div class="info">
+            <div class="title"><%=each.title%></div>
+            <div class="other_info">
+              <div class="course_info">
+                <div class="instructor"><%=each.instructor%></div>
+                <div class="price">Rs.<%=each.price%></div>
+                <div class="added_by">Added By</div>
+              </div>
+              <div class="btns">
+                <a href="<%=each.link%>">
+                  <button class="visit_course_btn" type="button" name="button">Visit Course</button>
+                </a>
+                <div class="vote_btn">
+                  <button id = "upvote-btn" class="vote" type="button" name="button"><i class="far fa-thumbs-up" onclick = "upvote(<%= each.courseId%>)"></i><%=each.upvote%></button>
+                  <button class="vote" type="button" name="button"><i class="far fa-thumbs-down" onclick = "downvote(<%= each.courseId%>)"></i><%=each.downvote%></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <%})%>
+      </div>
+    </div>
+
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/0.9.0rc1/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+    <script>
+      function upvote(id){
+        console.log (id)
+        var url = "/course/upvote/" + id;
+        fetch(url)
+        .then(function(res){
+          console.log(res);
+          return res.json()
+        })
+        .then(function (data){
+          console.log(data);
+          document.getElementById("upvote-btn").text = data.upvote
+        })
+      }
+
+      function downvote(id){
+        console.log (id)
+        var url = "/course/downvote/" + id;
+        fetch(url)
+        .then(function(res){
+          console.log(res);
+          return res.json()
+        })
+        .then(function (data){
+          console.log(data);
+          // document.getElementById("upvote-btn").text = data.upvote
+        })
+      }
+    </script>
+  </body>
+</html>
