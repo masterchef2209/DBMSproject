@@ -23,7 +23,7 @@ const methodOverride  = require('method-override'),
 var con = mysql.createConnection({
   host:     'localhost',
   user:     'root',
-  password: '<your_password>!',
+  password: 'swastik0310',
   database: 'meraki'
 });
 con.connect(function(err){
@@ -410,21 +410,121 @@ app.get('/logout',function(req, res) {
 
 
 //===dashboard routes===
-app.get("/dashboard",function(req,res){
-  if(!(req.session && req.session.user)){
-    res.redirect("/login");
-  }
-  else
-  res.render("/dashboard");
-    // res.render("dashboard");
-});
-// app.get('/dashboard', function(req, res) {
-//   if (req.session.user && req.cookies.user_sid) {
-//       res.render("dashboard");
-//   } else {
-//       res.redirect('/login');
-//   }
-// });
+// ==============================================================================
+//===dashboard routes===
+// ==============================================================================
+app.get("/dashboard/",function(req,res){
+  //   if(!(req.session && req.session.user)){
+  //     res.redirect("/login");
+  //   }
+  //   else{
+      console.log(req.session);
+      var userName = req.session.user
+      var query = "select * from userRegistration where user_name = 'random'";
+      con.query(query, function (error, results, fields){
+          if (error) throw error;
+          else{
+              var user_name = results[0].user_name;
+              var user_email = results[0].user_email;
+              var full_name = results[0].full_name;
+              var queryInt = "select * from userCourses where user_name = 'random' AND course_type = 'interested'"
+              var querypursue = "select * from userCourses where user_name = 'random' AND course_type = 'pursue'"
+              var querycompleted = "select * from userCourses where user_name = 'random' AND course_type = 'completed'";
+              var interestedCourses = [];
+              var pursuingCourses = [];
+              var completedCourses = [];
+              con.query(queryInt, function (errorInt, resultsInt,fieldsInt){
+                  if (errorInt) throw errorInt;
+                  else{
+                      console.log(resultsInt);
+                      resultsInt.forEach(function(interests){
+                          console.log(interests.course_name);
+                          interestedCourses.push(interests.course_name);
+                      });
+  
+                          con.query(querypursue, function (errorpursue, resultspursue,fieldspursue){
+                              if (errorpursue) throw errorpursue;
+                              else{
+                                  console.log(resultspursue);
+                                  resultspursue.forEach(function(pur){
+                                      console.log(pur.course_name);
+                                      pursuingCourses.push(pur.course_name);
+                                  })
+                                  con.query(querycompleted, function (errorcomp, resultscomp,fieldscomp){
+                                      if (errorcomp) throw errorcomp;
+                                      else{
+                                          console.log(resultscomp);
+                                          resultscomp.forEach(function(comp){
+                                              console.log(comp.course_name);
+                                              completedCourses.push(comp.course_name);
+                                          })
+                                          res.render("dashboard-index", {user_name: user_name, user_email: user_email, full_name: full_name, interestedCourses: interestedCourses, pursuingCourses: pursuingCourses, completedCourses: completedCourses});
+                                      }
+                                  })
+                              }
+                          })
+                  }
+              })
+              
+          }
+      })
+  });
+  
+app.get("/dashboard/recommended-courses", (req,res)=>{
+  var query = "select topic from userRegistration where user_name = 'random'";
+  con.query(query, (err, result, fields)=>{
+    if(err){
+      console.log(err);
+    }else{
+      var topic = result[0].topic;
+      console.log(topic)
+      var findQuery = "select * from courses where tag = '" + topic + "' order by upvote DESC limit 10";
+      console.log(findQuery)
+      con.query(findQuery, (err2, result2, field2)=>{
+        if(err){
+          console.log(err)
+        }else{
+          console.log(result2)
+          res.render("dashboard-recommended-courses", {result2: result2})
+        }
+        
+      })
+    }
+  })
+})
+
+
+  app.get('/user/profile', (req,res)=>{
+      query = "select * from userRegistration where user_name = 'random'";
+      con.query(query, (err, result, field)=>{
+          if (err){
+              console.log(err)
+          }else{
+              console.log(result);
+              res.render('profile', {user: result[0]});
+          }
+      })
+      
+  });
+  
+  app.post('/user/profile/add-IT', (req, res)=>{
+      console.log(req.body.IT);
+      console.log(req.session.user)
+      var IT = req.body.IT;
+      var user = req.session.user;
+      query = 'INSERT INTO userCourses (user_name, topic)';
+      res.redirect('/user/profile')
+  })
+  
+  app.post('/user/profile/add-IC', (req, res)=>{
+      console.log(req.body.IC);
+      console.log(req.session.user)
+      var IC = req.body.IC;
+      var user = req.session.user;
+      query = "INSERT INTO userCourses (user_name, course_type, course_name) values (" +"'" + user + "', 'interested', " + "'" + IC + "')";
+      // con.query(query, (err, result)=>)
+      res.redirect('/user/profile')
+  })
 
 
 
