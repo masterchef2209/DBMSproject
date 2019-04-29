@@ -10,8 +10,10 @@ var   express           = require("express"),
       user              = require("./models/user"),
       morgan            = require('morgan');
 
+
 const methodOverride  = require('method-override'),
       cookieParser    = require('cookie-parser'),
+      ejs             = require('ejs'),
       session         = require('express-session');
 
 
@@ -19,10 +21,10 @@ const methodOverride  = require('method-override'),
 //connecting with mysql DB
 //=========================
 var con = mysql.createConnection({
-    host:     'localhost',
-    user:     'root',
-    password: '<your_password>',
-    database: 'user'
+  host:     'localhost',
+  user:     'root',
+  password: '<password>',
+  database: 'meraki'
 });
 con.connect(function(err){
     if(err){
@@ -170,8 +172,118 @@ passport.use(new GoogleStrategy({
 
 //===home route===
 app.get("/",function(req,res){
-    res.render("home");
+    res.render("index");
 });
+
+app.get("/about-us",function(req,res){
+  res.render("about-us");
+});
+
+
+app.get("/contact-us",function(req,res){
+  res.render("contact-us");
+});
+
+app.post("/contact-us",function(req,res){
+  console.log(req.body)
+  insertQuery = "INSERT INTO contactus (firstName, lastName, email, subject, message) VALUES ('" + req.body.firstName + "', '" + req.body.lastName + "', '" + req.body.email + "', '" + req.body.subject + "', '" + req.body.message + "')";
+  console.log(insertQuery)
+  con.query(insertQuery, (err, result, field)=>{
+    if(err){
+      console.log(err);
+    }else{
+      res.redirect("/");
+    }
+  })
+  
+});
+
+app.get("/catalogue", function (req, res){
+  res.render("catalogue");
+});
+
+
+app.get("/category/:id", (req,res)=>{
+  query = "select * from courses where tag = '" + req.params.id + "'";
+  con.query(query, (err, result, fields)=>{
+    console.log(result)
+    res.render("courses", {result: result})
+  })
+})
+
+app.get("/course/upvote/:id", (req, res)=>{
+  var id = req.params.id;
+  console.log(id);
+  // id = parseInt(id);
+  console.log(typeof id);
+  querySelect = "SELECT upvote FROM courses WHERE courseId = " + id;
+  
+  con.query(querySelect, (err, result, fields)=>{
+    if (err){
+      console.log(err);
+    } else{
+      console.log(result)
+      var upvote = result[0].upvote + 1;
+      console.log(upvote)
+      queryUpdate = "UPDATE courses SET upvote = " + upvote + " WHERE courseId = " + id;
+      console.log(queryUpdate)
+      con.query(queryUpdate, (err2, result2, fields2)=>{
+        if (err){
+          console.log(err2);
+        } else{
+          console.log(result2)
+          var obj = {upvote: upvote}
+          var api = JSON.stringify(obj);
+          res.send(api)
+        }
+      })
+    }
+  })
+})
+
+
+app.get("/course/downvote/:id", (req, res)=>{
+  var id = req.params.id;
+  console.log(id);
+  // id = parseInt(id);
+  console.log(typeof id);
+  querySelect = "SELECT downvote FROM courses WHERE courseId = " + id;
+  
+  con.query(querySelect, (err, result, fields)=>{
+    if (err){
+      console.log(err);
+    } else{
+      console.log(result)
+      var downvote = result[0].downvote + 1;
+      console.log(downvote)
+      queryUpdate = "UPDATE courses SET downvote = " + downvote + " WHERE courseId = " + id;
+      console.log(queryUpdate)
+      con.query(queryUpdate, (err2, result2, fields2)=>{
+        if (err){
+          console.log(err2);
+        } else{
+          console.log(result2)
+          var obj = {downvote: downvote}
+          var api = JSON.stringify(obj);
+          res.send(api)
+        }
+      })
+    }
+  })
+})
+
+
+app.get("/search", function (req, res){
+  var query = "select * from courses where title = '" + req.query.course + "'";
+  con.query(query, (err, result, field)=>{
+    if (err){
+      console.log(err);
+    }else{
+      res.render("courses", {result: result})    }
+  }) 
+  // res.send("here we will show search results");
+});
+
 
 
 //===signup routes===
@@ -216,29 +328,7 @@ app.post("/signup", function(req,res){
     }
   });
 });
-// app.post("/signup",function(req,res){
-//         var today = new Date();
-//         var userRegistration={
-//           "user_name":req.body.username,
-//           "user_password":req.body.password,
-//           "user_email":req.body.email,
-//           "full_name":req.body.fullname,
-//           "interests":req.body.interests,
-//           "created":today,
-//           "modified":today
-//         }
-//         // userRegistration.plugin(passportLocal);
-//         con.query('INSERT INTO userRegistration SET ?',userRegistration, function (error, results, fields) {
-//         if (error) {
-//           console.log("error ocurred",error);
-//           res.send("SIGNUP FAILED!!!! TRY AGAIN");
-//         }
-//         else{
-//           console.log('The solution is: ', results);
-          // res.redirect("/");
-//         }
-//         });
-// });
+
 
 
 
@@ -367,15 +457,26 @@ app.post("/add-new-course", (req,res)=>{
 //     // fields will contain information about the returned results fields (if any)
 //   });
 
-app.get("/search", function (req, res){
-    res.send("here we will show search results");
-});
 
 
-app.get("/categories", function (req, res){
-    res.send("here we will show all possible categories");
-});
 
+
+
+
+
+
+app.get("/topic/:id", (req, res)=>{
+  var topic = req.params.id;
+  query ="select * from courses where tag = '" + topic + "'";
+  con.query(query, (err, result, fields)=>{
+    if(err){
+      console.log("err");
+    }else{
+      console.log(result);
+      res.send(result);
+    }
+  })
+})
 //==============
 //ROUTES END
 //==============
