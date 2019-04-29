@@ -23,7 +23,7 @@ const methodOverride  = require('method-override'),
 var con = mysql.createConnection({
   host:     'localhost',
   user:     'root',
-  password: '<password>',
+  password: 'swastik0310',
   database: 'meraki'
 });
 con.connect(function(err){
@@ -362,34 +362,7 @@ app.post("/login", function(req,res){
         }
     });
   });
-// app.post('/login',
-//   passport.authenticate('local', { failureRedirect: '/login' }),
-//   function(req, res) {
-//     res.redirect('/dashboard');
-//   });
-// app.post("/login",function(req,res){
-//         var user_name= req.body.username;
-//         var user_password = req.body.password;
-        // con.query('SELECT * FROM userRegistration WHERE user_name = ?',[user_name], function (error, results, fields) {
-        // if (error) {
-        //   res.redirect("/login");
-        // }
-        // else{
-        //   console.log('The solution is: ', results);
-        //   if(results.length >0){
-        //     if(results[0].user_password == user_password){
-        //       res.redirect("/dashboard");
-        //     }
-        //     else{
-        //       res.send("USERNAME AND PASSWORD DO NOT MATCH");
-        //     }
-        //   }
-        //   else{
-        //     res.send("EMAIL DOES NOT EXIST");
-        //           }
-        // }
-        // });
-// });
+
 
 
 
@@ -399,32 +372,10 @@ app.get('/logout',function(req, res) {
     req.session.destroy();
     res.redirect('/login');
 });
-  // console.log(req.session.user);
-  // console.log(req.cookies.user_name);
-  // if (req.session.user && req.cookies.user_name) {
-  //     res.clearCookie('user_name');
-  //     res.redirect('/');
-  // } else {
-  // }
 
 
 
-//===dashboard routes===
-app.get("/dashboard",function(req,res){
-  if(!(req.session && req.session.user)){
-    res.redirect("/login");
-  }
-  else
-  res.render("/dashboard");
-    // res.render("dashboard");
-});
-// app.get('/dashboard', function(req, res) {
-//   if (req.session.user && req.cookies.user_sid) {
-//       res.render("dashboard");
-//   } else {
-//       res.redirect('/login');
-//   }
-// });
+
 
 
 
@@ -450,21 +401,6 @@ app.post("/add-new-course", (req,res)=>{
 
 })
 
-// example of query action
-// connection.query('SELECT * FROM `books` WHERE `author` = "David"', function (error, results, fields) {
-//     // error will be an Error if one occurred during the query
-//     // results will contain the results of the query
-//     // fields will contain information about the returned results fields (if any)
-//   });
-
-
-
-
-
-
-
-
-
 app.get("/topic/:id", (req, res)=>{
   var topic = req.params.id;
   query ="select * from courses where tag = '" + topic + "'";
@@ -477,25 +413,130 @@ app.get("/topic/:id", (req, res)=>{
     }
   })
 })
+
+
+
+// ==============================================================================
+//===dashboard routes===
+// ==============================================================================
+app.get("/dashboard/",function(req,res){
+  //   if(!(req.session && req.session.user)){
+  //     res.redirect("/login");
+  //   }
+  //   else{
+      console.log(req.session);
+      var userName = req.session.user
+      var query = "select * from userRegistration where user_name = 'random'";
+      con.query(query, function (error, results, fields){
+          if (error) throw error;
+          else{
+              var user_name = results[0].user_name;
+              var user_email = results[0].user_email;
+              var full_name = results[0].full_name;
+              var queryInt = "select * from userCourses where user_name = 'random' AND course_type = 'interested'"
+              var querypursue = "select * from userCourses where user_name = 'random' AND course_type = 'pursue'"
+              var querycompleted = "select * from userCourses where user_name = 'random' AND course_type = 'completed'";
+              var interestedCourses = [];
+              var pursuingCourses = [];
+              var completedCourses = [];
+              con.query(queryInt, function (errorInt, resultsInt,fieldsInt){
+                  if (errorInt) throw errorInt;
+                  else{
+                      console.log(resultsInt);
+                      resultsInt.forEach(function(interests){
+                          console.log(interests.course_name);
+                          interestedCourses.push(interests.course_name);
+                      });
+  
+                          con.query(querypursue, function (errorpursue, resultspursue,fieldspursue){
+                              if (errorpursue) throw errorpursue;
+                              else{
+                                  console.log(resultspursue);
+                                  resultspursue.forEach(function(pur){
+                                      console.log(pur.course_name);
+                                      pursuingCourses.push(pur.course_name);
+                                  })
+                                  con.query(querycompleted, function (errorcomp, resultscomp,fieldscomp){
+                                      if (errorcomp) throw errorcomp;
+                                      else{
+                                          console.log(resultscomp);
+                                          resultscomp.forEach(function(comp){
+                                              console.log(comp.course_name);
+                                              completedCourses.push(comp.course_name);
+                                          })
+                                          res.render("dashboard-index", {user_name: user_name, user_email: user_email, full_name: full_name, interestedCourses: interestedCourses, pursuingCourses: pursuingCourses, completedCourses: completedCourses});
+                                      }
+                                  })
+                              }
+                          })
+                  }
+              })
+              
+          }
+      })
+  });
+  
+app.get("/dashboard/recommended-courses", (req,res)=>{
+  var query = "select topic from userRegistration where user_name = 'random'";
+  con.query(query, (err, result, fields)=>{
+    if(err){
+      console.log(err);
+    }else{
+      var topic = result[0].topic;
+      console.log(topic)
+      var findQuery = "select * from courses where tag = '" + topic + "' order by upvote DESC limit 10";
+      console.log(findQuery)
+      con.query(findQuery, (err2, result2, field2)=>{
+        if(err){
+          console.log(err)
+        }else{
+          console.log(result2)
+          res.render("dashboard-recommended-courses", {result2: result2})
+        }
+        
+      })
+    }
+  })
+})
+
+
+  app.get('/user/profile', (req,res)=>{
+      query = "select * from userRegistration where user_name = 'random'";
+      con.query(query, (err, result, field)=>{
+          if (err){
+              console.log(err)
+          }else{
+              console.log(result);
+              res.render('profile', {user: result[0]});
+          }
+      })
+      
+  });
+  
+  app.post('/user/profile/add-IT', (req, res)=>{
+      console.log(req.body.IT);
+      console.log(req.session.user)
+      var IT = req.body.IT;
+      var user = req.session.user;
+      query = 'INSERT INTO userCourses (user_name, topic)';
+      res.redirect('/user/profile')
+  })
+  
+  app.post('/user/profile/add-IC', (req, res)=>{
+      console.log(req.body.IC);
+      console.log(req.session.user)
+      var IC = req.body.IC;
+      var user = req.session.user;
+      query = "INSERT INTO userCourses (user_name, course_type, course_name) values (" +"'" + user + "', 'interested', " + "'" + IC + "')";
+      // con.query(query, (err, result)=>)
+      res.redirect('/user/profile')
+  })
+
+
+
 //==============
 //ROUTES END
 //==============
-
-
-
-
-
-// function isLoggedIn(req, res, next) {
-//   if (req.user.authenticated)
-//     return next();
-//   res.redirect('/login');
-// }
-// function isLoggedIn(req,res,next){
-//     if(req.user){
-//         return next();
-//     }
-//     res.redirect("/login");
-// }
 
 
 app.listen(3000,process.env.IP,function(){
